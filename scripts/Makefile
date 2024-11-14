@@ -1,4 +1,3 @@
-
 COLOUR_GREEN=\n\033[0;32m
 COLOUR_RED=\033[0;31m
 COLOUR_BLUE=\033[0;34m
@@ -81,7 +80,7 @@ $(BUILDDIR)/uboot-prepare-checkout-stamp:
 	@echo "$(COLOUR_GREEN)Checking out U-Boot for $(BOARD)$(END_COLOUR)"
 	@mkdir -p $(BUILDDIR)
 	@git clone --depth 1 https://github.com/sophgo/u-boot-2021.10.git $(BUILDDIR)/u-boot
-	@cd $(BUILDDIR)/u-boot && git checkout 4a21b6b
+	@cd $(BUILDDIR)/u-boot && git checkout b70d08a
 	@touch $@
 
 $(BUILDDIR)/uboot-prepare-patch-stamp: $(BUILDDIR)/uboot-prepare-checkout-stamp
