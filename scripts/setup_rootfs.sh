@@ -26,7 +26,7 @@ unset DEBIAN_FRONTEND DEBCONF_NONINTERACTIVE_SEEN
 # Set root passwd
 echo "root:debian" | chpasswd
 
-sed -i "s/#PermitRootLogin.*/PermitRootLogin yes/g" /etc/ssh/sshd_config
+#sed -i "s/#PermitRootLogin.*/PermitRootLogin yes/g" /etc/ssh/sshd_config
 
 
 # Set up fstab
@@ -68,7 +68,7 @@ fi
 
 cat /etc/systemd/system/finalize-image.service
 
-apt install -y -f /tmp/install/*.deb
+apt-get --no-install-recommends --no-install-suggests install -y -f /tmp/install/*.deb
 
 
 # change device tree
