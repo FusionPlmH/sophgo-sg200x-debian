@@ -23,21 +23,11 @@ dpkg --configure -a
 
 unset DEBIAN_FRONTEND DEBCONF_NONINTERACTIVE_SEEN
 
-#
-# Change root password to 'rv'
-#
-usermod --password "$(echo rv | openssl passwd -1 -stdin)" root
+# Set root passwd
+echo "root:debian" | chpasswd
 
-#
-# Add a new user debian and its passwd is `rv`
-#
-mkdir -p /home/debian
-useradd --password dummy \
-    -G cdrom,floppy,sudo,audio,dip,video,plugdev \
-    --home-dir /home/debian --shell /bin/bash debian || true
-chown debian:debian /home/debian
-# Set password to 'debian'
-usermod --password "$(echo rv | openssl passwd -1 -stdin)" debian || true
+sed -i "s/#PermitRootLogin.*/PermitRootLogin yes/g" /etc/ssh/sshd_config
+
 
 # Set up fstab
 cat > /etc/fstab <<EOF
@@ -144,7 +134,6 @@ fi
 
 rm -rf /etc/apt/sources.list.d/multistrap-debian.list
 
-#apt-key add /tmp/install/public-key.asc
 cp /tmp/install/public-key.asc /etc/apt/trusted.gpg.d/sophgo-myho-st.gpg
 
 cat > /etc/apt/sources.list <<EOF
@@ -154,6 +143,23 @@ EOF
 
 echo "/boot/uboot.env	0x0000          0x20000" > /etc/fw_env.config
 mkenvimage -s 0x20000 -o /boot/uboot.env /etc/u-boot-initial-env
+
+
+
+# Add custom support
+rm -rf /etc/resolv.conf
+rm -rf /usr/lib/systemd/resolv.conf
+cat > "/etc/resolv.conf" <<-EOF
+nameserver 1.1.1.1
+mameserver 8.8.8.8
+EOF
+cat > "/usr/lib/systemd/resolv.conf" <<-EOF
+nameserver 1.1.1.1
+mameserver 8.8.8.8
+EOF
+
+
+
 
 
 #
