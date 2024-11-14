@@ -133,6 +133,8 @@ EOF
 cat >> /etc/network/interfaces.d/wlan0 << EOF
 allow-hotplug wlan0
 iface usb0 wlan0 dhcp
+        wpa-ssid Home_5G
+        wpa-psk 13password
 EOF
 
 
