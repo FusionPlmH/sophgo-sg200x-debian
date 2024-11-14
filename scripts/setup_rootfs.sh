@@ -130,6 +130,11 @@ iface usb0 inet static
         netmask 255.255.255.0
 EOF
 
+cat >> /etc/network/interfaces.d/wlan0 << EOF
+allow-hotplug wlan0
+iface usb0 wlan0 dhcp
+EOF
+
 
 # 
 # Enable system services
