@@ -26,13 +26,17 @@ unset DEBIAN_FRONTEND DEBCONF_NONINTERACTIVE_SEEN
 # Set root passwd
 echo "root:debian" | chpasswd
 
-#sed -i "s/#PermitRootLogin.*/PermitRootLogin yes/g" /etc/ssh/sshd_config
-
+# Create Swap
+fallocate -l 500M /swapfile
+chmod 600 /swapfile
+mkswap /swapfile
+swapon /swapfile
 
 # Set up fstab
 cat > /etc/fstab <<EOF
 # <file system> <mount point>   <type>  <options>                 <dump>  <pass>
 /dev/root       /               auto    defaults                  1       1
+/swapfile       none            swap    sw                        0       0
 EOF
 
 if [ "$STORAGETYPE" = "sd" ]; then
@@ -139,6 +143,7 @@ systemctl disable systemd-journald
 
 cat >> /etc/sysctl.conf << EOF
 kernel.printk = 3 4 1 3
+vm.swappiness=10
 EOF
 
 sysctl -p
