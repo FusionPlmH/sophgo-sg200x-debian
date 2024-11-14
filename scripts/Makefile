@@ -153,7 +153,7 @@ $(BUILDDIR)/fsbl-prepare-checkout-stamp:
 	@echo "$(COLOUR_GREEN)Checking out FSBL for $(BOARD)$(END_COLOUR)"
 	@mkdir -p $(BUILDDIR)
 	@git clone -b sg200x-dev --depth 1 https://github.com/sophgo/fsbl.git $(BUILDDIR)/fsbl
-	@cd $(BUILDDIR)/fsbl && git checkout 15a84c5
+	@cd $(BUILDDIR)/fsbl && git checkout 2039113
 	@touch $@
 
 $(BUILDDIR)/fsbl-prepare-patch-stamp: $(BUILDDIR)/fsbl-prepare-checkout-stamp
