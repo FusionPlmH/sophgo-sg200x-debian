@@ -138,12 +138,18 @@ EOF
 # 
 # Disable Log for better performance save space
 #
+systemctl stop systemd-journald-dev-log.socket
+systemctl stop systemd-journald.socket
 systemctl stop systemd-journald
-systemctl disable systemd-journald
+systemctl mask systemd-journald.service
+systemctl mask systemd-journald.socket
+systemctl mask systemd-journald-dev-log.socket
 
 cat >> /etc/sysctl.conf << EOF
 kernel.printk = 3 4 1 3
 vm.swappiness=10
+net.ipv6.conf.all.disable_ipv6=1
+net.ipv6.conf.default.disable_ipv6=1
 EOF
 
 sysctl -p
