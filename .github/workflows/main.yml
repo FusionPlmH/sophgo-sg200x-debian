@@ -53,7 +53,7 @@ jobs:
   build-image:
     strategy:
       matrix:
-        boards: [licheervnano, duo256, duos]
+        boards: [licheervnano]
         storage: [sd]
         include: 
           - boards: licheervnano
