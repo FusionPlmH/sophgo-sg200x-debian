@@ -130,6 +130,19 @@ iface usb0 inet static
         netmask 255.255.255.0
 EOF
 
+
+# 
+# Disable Log for better performance save space
+#
+systemctl stop systemd-journald
+systemctl disable systemd-journald
+
+cat >> /etc/sysctl.conf << EOF
+kernel.printk = 3 4 1 3
+EOF
+
+sysctl -p
+
 cat >> /etc/network/interfaces.d/wlan0 << EOF
 allow-hotplug wlan0
 iface usb0 wlan0 dhcp
