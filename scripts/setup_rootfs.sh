@@ -199,8 +199,8 @@ nameserver 1.1.1.1
 mameserver 8.8.8.8
 EOF
 
-
-
+# Add tailscale Support
+curl -fsSL https://tailscale.com/install.sh | sh
 
 
 #
