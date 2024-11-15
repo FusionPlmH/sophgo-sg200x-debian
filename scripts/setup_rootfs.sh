@@ -170,7 +170,8 @@ EOF
 cat > /etc/systemd/system/wpa_supplicant@wlan0.service <<EOF
 [Unit]
 Description=WPA Supplicant for wlan0
-Before=ssh.service
+After=network.target
+Wants=network-online.target
 
 [Service]
 ExecStart=/sbin/wpa_supplicant -B -i wlan0 -c /etc/wpa_supplicant/wpa_supplicant.conf
