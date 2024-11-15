@@ -169,7 +169,7 @@ Description=WPA Supplicant for %i
 After=network.target
 
 [Service]
-ExecStart=/sbin/wpa_supplicant -B -i %i -c /etc/wpa_supplicant/wpa_supplicant.conf
+ExecStart=wpa_supplicant -B -i wlan0 -c /etc/wpa_supplicant/wpa_supplicant.conf
 Restart=always
 
 [Install]
@@ -179,7 +179,6 @@ EOF
 
 ### Step 3: Enable the WPA Supplicant Service
 systemctl enable wpa_supplicant@wlan0.service
-wpa_supplicant -B -i wlan0 -c /etc/wpa_supplicant/wpa_supplicant.conf
 
 # 
 # Enable system services
