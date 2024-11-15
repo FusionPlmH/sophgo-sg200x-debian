@@ -30,7 +30,6 @@ echo "root:debian" | chpasswd
 fallocate -l 500M /swapfile
 chmod 600 /swapfile
 mkswap /swapfile
-swapon /swapfile
 
 # Set up fstab
 cat > /etc/fstab <<EOF
