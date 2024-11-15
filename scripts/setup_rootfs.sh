@@ -166,11 +166,27 @@ sysctl -p
 cat >> /etc/network/interfaces.d/wlan0 << EOF
 allow-hotplug wlan0
 iface usb0 wlan0 dhcp
-        wpa-ssid Home_5G
-        wpa-psk 13password
 EOF
 
 
+
+cat > /etc/systemd/system/wpa_supplicant@wlan0.service <<EOF
+[Unit]
+Description=WPA Supplicant for %i
+After=network.target
+
+[Service]
+ExecStart=/sbin/wpa_supplicant -B -i %i -c /etc/wpa_supplicant/wpa_supplicant.conf
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+
+### Step 3: Enable the WPA Supplicant Service
+systemctl enable wpa_supplicant@wlan0.service
+ 
 # 
 # Enable system services
 #
