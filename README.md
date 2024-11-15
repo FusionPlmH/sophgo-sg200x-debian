@@ -33,13 +33,11 @@ The flashing should then continue
 
 
 ## Image Info
-Logins: root/rv and debian/rv
-
-(root login is disabled via SSH, login via debian, and SU to root if needed)
+Logins: root/debian
 
 ### USB Gadget Support
 by default, a rndis interface is started on the USB port, and the IP address is
-10.42.0.1 - It also starts a DHCP Server on that interface, so your PC should automatically get an IP address in the 10.42.0.x range
+10.42.0.1 -  so you should set your PC IP address in the 10.42.0.x range
 
 To Disable the rndis interface, you can run the following command:
 ```
