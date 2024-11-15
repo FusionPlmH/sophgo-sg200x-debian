@@ -26,16 +26,10 @@ unset DEBIAN_FRONTEND DEBCONF_NONINTERACTIVE_SEEN
 # Set root passwd
 echo "root:debian" | chpasswd
 
-# Create Swap
-fallocate -l 500M /swapfile
-chmod 600 /swapfile
-mkswap /swapfile
-
 # Set up fstab
 cat > /etc/fstab <<EOF
 # <file system> <mount point>   <type>  <options>                 <dump>  <pass>
 /dev/root       /               auto    defaults                  1       1
-/swapfile       none            swap    sw                        0       0
 EOF
 
 if [ "$STORAGETYPE" = "sd" ]; then
@@ -185,7 +179,8 @@ EOF
 
 ### Step 3: Enable the WPA Supplicant Service
 systemctl enable wpa_supplicant@wlan0.service
- 
+wpa_supplicant -B -i wlan0 -c /etc/wpa_supplicant/wpa_supplicant.conf
+
 # 
 # Enable system services
 #
@@ -207,6 +202,16 @@ EOF
 
 echo "/boot/uboot.env	0x0000          0x20000" > /etc/fw_env.config
 mkenvimage -s 0x20000 -o /boot/uboot.env /etc/u-boot-initial-env
+
+# Create Swap
+fallocate -l 500M /swapfile
+chmod 600 /swapfile
+mkswap /swapfile
+swapon /swapfile
+cat >> /etc/fstab << EOF
+/swapfile       none            swap    sw                        0       0
+EOF
+
 
 
 
