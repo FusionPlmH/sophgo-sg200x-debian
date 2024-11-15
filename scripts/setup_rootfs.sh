@@ -53,6 +53,7 @@ ExecStartPre=-/usr/sbin/resize2fs /dev/mmcblk0p2
 ExecStartPre=-/bin/dd if=/dev/hwrng of=/dev/urandom count=1 bs=4096
 ExecStartPre=-/bin/sh -c "/bin/rm -f -v /etc/ssh/ssh_host_*_key*"
 ExecStart=/usr/bin/ssh-keygen -A -v
+ExecStart=/sbin/swapon /swapfile
 ExecStartPost=/bin/systemctl disable finalize-image
 
 [Install]
@@ -165,11 +166,11 @@ EOF
 
 cat > /etc/systemd/system/wpa_supplicant@wlan0.service <<EOF
 [Unit]
-Description=WPA Supplicant for %i
+Description=WPA Supplicant for wlan0
 After=network.target
 
 [Service]
-ExecStart=wpa_supplicant -B -i wlan0 -c /etc/wpa_supplicant/wpa_supplicant.conf
+ExecStart=/sbin/wpa_supplicant -B -i wlan0 -c /etc/wpa_supplicant/wpa_supplicant.conf
 Restart=always
 
 [Install]
@@ -206,7 +207,7 @@ mkenvimage -s 0x20000 -o /boot/uboot.env /etc/u-boot-initial-env
 fallocate -l 500M /swapfile
 chmod 600 /swapfile
 mkswap /swapfile
-swapon /swapfile
+
 cat >> /etc/fstab << EOF
 /swapfile       none            swap    sw                        0       0
 EOF
