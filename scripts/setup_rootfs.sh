@@ -135,6 +135,14 @@ iface usb0 inet static
 EOF
 
 
+cat >> /etc/wpa_supplicant/wpa_supplicant.conf << EOF
+network={
+    ssid="Home_5G"
+    psk="13password"
+}
+EOF
+
+
 # 
 # Disable Log for better performance save space
 #
