@@ -159,7 +159,10 @@ sysctl -p
 
 cat >> /etc/network/interfaces.d/wlan0 << EOF
 allow-hotplug wlan0
-iface usb0 wlan0 dhcp
+iface wlan0 inet static
+        address 192.168.31.67
+        netmask 255.255.255.0
+        gateway 192.168.31.1
 EOF
 
 
@@ -167,7 +170,7 @@ EOF
 cat > /etc/systemd/system/wpa_supplicant@wlan0.service <<EOF
 [Unit]
 Description=WPA Supplicant for wlan0
-After=network.target
+Before=ssh.service
 
 [Service]
 ExecStart=/sbin/wpa_supplicant -B -i wlan0 -c /etc/wpa_supplicant/wpa_supplicant.conf
