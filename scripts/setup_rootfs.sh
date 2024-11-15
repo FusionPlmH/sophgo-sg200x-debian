@@ -207,7 +207,7 @@ echo "/boot/uboot.env	0x0000          0x20000" > /etc/fw_env.config
 mkenvimage -s 0x20000 -o /boot/uboot.env /etc/u-boot-initial-env
 
 # Create Swap
-fallocate -l 500M /swapfile
+dd if=/dev/zero of=/swapfile bs=1G count=2
 chmod 600 /swapfile
 mkswap /swapfile
 
