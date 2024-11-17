@@ -57,15 +57,16 @@ ExecStart=/bin/chmod 600 /swapfile
 ExecStart=/sbin/mkswap /swapfile
 ExecStart=/bin/echo '/swapfile none swap sw 0 0' |  /bin/tee -a /etc/fstab
 ExecStart=/sbin/swapon /swapfile
+ExecStartPost=/bin/systemctl disable usb-gadget-rndis-usb0.service
 ExecStartPost=/bin/systemctl disable finalize-image
 
 [Install]
 WantedBy=multi-user.target
 EOF
 
-#if [ "$STORAGETYPE" = "emmc" ]; then
-#sed -i -e 's|ExecStartPre=-/usr/sbin/parted -s -f /dev/mmcblk0 resizepart 2 100%|ExecStartPre=-/usr/sbin/parted -s -f /dev/mmcblk0 resizepart 1 100%|' /etc/systemd/system/finalize-image.service
-#fi
+if [ "$STORAGETYPE" = "emmc" ]; then
+sed -i -e 's|ExecStartPre=-/usr/sbin/parted -s -f /dev/mmcblk0 resizepart 2 100%|ExecStartPre=-/usr/sbin/parted -s -f /dev/mmcblk0 resizepart 1 100%|' /etc/systemd/system/finalize-image.service
+fi
 
 cat > /etc/sysctl.d/90-override.conf <<EOF
 kernel.pid_max = 32768
@@ -126,13 +127,6 @@ cat >> /etc/hosts << EOF
 127.0.0.1      ${HOSTNAME} 
 EOF
 
-cat >> /etc/wpa_supplicant/wpa_supplicant.conf << EOF
-network={
-    ssid="Home_5G"
-    psk="13password"
-}
-EOF
-
 
 # 
 # Disable Log for better performance save space
@@ -163,20 +157,7 @@ iface wlan0 inet static
         gateway 192.168.31.1
 EOF
 
-## Create USB Net
-mkdir /sys/kernel/config/usb_gadget/g0
-cd /sys/kernel/config/usb_gadget/g0
-echo 0x359F > idVendor
-echo 0x2120 > idProduct
-mkdir strings/0x409
-echo "5976763312" > strings/0x409/serialnumber
-echo "sipeed" > strings/0x409/manufacturer
-echo "licheervnano" > strings/0x409/product
-mkdir configs/c.1
-echo 120 > configs/c.1/MaxPower
-mkdir functions/ecm.usb0
-ln -s functions/ecm.usb0 configs/c.1/
-
+## Create Usb
 cat >> /etc/network/interfaces.d/usb0 << EOF
 allow-hotplug usb0
 iface usb0 inet static
