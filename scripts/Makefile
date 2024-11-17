@@ -39,7 +39,7 @@ $(BUILDDIR)/linux-prepare-checkout-stamp:
 	@echo "$(COLOUR_GREEN)Checking out Kernel for $(BOARD)$(END_COLOUR)"
 	@mkdir -p $(BUILDDIR)
 	@git clone -b sg200x-dev --depth 7 https://github.com/sophgo/linux_5.10.git /build/kernel
-	@cd $(BUILDDIR)/kernel && git checkout e6ead53
+	@cd $(BUILDDIR)/kernel && git checkout 6fe9639
 	@touch $@
 
 $(BUILDDIR)/linux-prepare-patch-stamp: $(BUILDDIR)/linux-prepare-checkout-stamp
