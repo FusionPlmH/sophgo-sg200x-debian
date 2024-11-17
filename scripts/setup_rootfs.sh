@@ -57,8 +57,6 @@ ExecStart=/bin/chmod 600 /swapfile
 ExecStart=/sbin/mkswap /swapfile
 ExecStart=/bin/echo '/swapfile none swap sw 0 0' |  /bin/tee -a /etc/fstab
 ExecStart=/sbin/swapon /swapfile
-ExecStart=/bin/systemctl disable usb-gadget-rndis-usb0.service
-ExecStart=/bin/apt-mark hold linux-libc-dev
 ExecStartPost=/bin/systemctl disable finalize-image
 
 [Install]
@@ -175,7 +173,8 @@ Name=eth0
 DHCP=yes
 EOF
 
-
+# Disbale RNDIS DHCP
+systemctl disable usb-gadget-rndis-usb0.service
 
 # 
 # Enable system services
@@ -217,6 +216,7 @@ EOF
 #
 # set kernel header no updated and clean apt cache on the system
 #
+apt-mark hold linux-libc-dev
 apt-get clean
 
 
