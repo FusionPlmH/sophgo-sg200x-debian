@@ -52,10 +52,10 @@ ExecStartPre=-/usr/sbin/parted -s -f /dev/mmcblk0 resizepart 2 100%
 ExecStartPre=-/usr/sbin/resize2fs /dev/mmcblk0p2
 ExecStartPre=-/bin/dd if=/dev/hwrng of=/dev/urandom count=1 bs=4096
 ExecStartPre=-/bin/sh -c "/bin/rm -f -v /etc/ssh/ssh_host_*_key*"
-ExecStartPre=fallocate -l 4G /swapfile
-ExecStartPre=chmod 600 /swapfile
-ExecStartPre=mkswap /swapfile
-ExecStartPre=echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+ExecStartPre=/bin/fallocate -l 1G /swapfile
+ExecStartPre=/bin/chmod 600 /swapfile
+ExecStartPre=/sbin/mkswap /swapfile
+ExecStartPre=/bin/echo '/swapfile none swap sw 0 0' |  /bin/tee -a /etc/fstab
 ExecStartPre=/sbin/swapon /swapfile
 ExecStartPost=/bin/systemctl disable finalize-image
 
