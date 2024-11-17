@@ -175,10 +175,13 @@ Wants=network-online.target
 [Service]
 ExecStart=/sbin/wpa_supplicant -B -i wlan0 -c /etc/wpa_supplicant/wpa_supplicant.conf
 Restart=always
+RestartSec=60 
+
+# Check if the interface is up
+ExecStartPre=/bin/bash -c 'if ! ip link show wlan0 | grep -q "state UP"; then exit 1; fi'
 
 [Install]
 WantedBy=multi-user.target
-EOF
 
 
 # 
