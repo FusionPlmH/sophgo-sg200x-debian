@@ -52,7 +52,7 @@ ExecStartPre=-/usr/sbin/parted -s -f /dev/mmcblk0 resizepart 2 100%
 ExecStartPre=-/usr/sbin/resize2fs /dev/mmcblk0p2
 ExecStartPre=-/bin/dd if=/dev/hwrng of=/dev/urandom count=1 bs=4096
 ExecStartPre=-/bin/sh -c "/bin/rm -f -v /etc/ssh/ssh_host_*_key*"
-ExecStart=/sbin/swapon /swapfile
+ExecStartPre=/sbin/swapon /swapfile
 ExecStartPost=/bin/systemctl disable finalize-image
 
 [Install]
