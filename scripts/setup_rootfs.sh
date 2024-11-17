@@ -166,14 +166,14 @@ iface wlan0 inet static
 EOF
 
 ## Create USB Net
-mkdir /sys/kernel/config/usb_gadget/g1
-cd /sys/kernel/config/usb_gadget/g1
-echo 0x1d6b > idVendor
-echo 0x0104 > idProduct
+mkdir /sys/kernel/config/usb_gadget/g0
+cd /sys/kernel/config/usb_gadget/g0
+echo 0x359F > idVendor
+echo 0x2120 > idProduct
 mkdir strings/0x409
-echo "0123456789" > strings/0x409/serialnumber
-echo "My Manufacturer" > strings/0x409/manufacturer
-echo "My Gadget" > strings/0x409/product
+echo "5976763312" > strings/0x409/serialnumber
+echo "sipeed" > strings/0x409/manufacturer
+echo "licheervnano" > strings/0x409/product
 mkdir configs/c.1
 echo 120 > configs/c.1/MaxPower
 mkdir functions/ecm.usb0
