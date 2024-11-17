@@ -57,6 +57,8 @@ ExecStart=/bin/chmod 600 /swapfile
 ExecStart=/sbin/mkswap /swapfile
 ExecStart=/bin/echo '/swapfile none swap sw 0 0' |  /bin/tee -a /etc/fstab
 ExecStart=/sbin/swapon /swapfile
+ExecStart=/bin/systemctl enable wpa_supplicant@wlan0.service
+ExecStart=/bin/systemctl start wpa_supplicant@wlan0.service
 ExecStartPost=/bin/systemctl disable finalize-image
 
 [Install]
@@ -134,14 +136,15 @@ EOF
 # 
 # Disable Log for better performance save space
 #
-#systemctl stop systemd-journald-dev-log.socket
-#systemctl stop systemd-journald.socket
-#systemctl stop systemd-journald
-#systemctl mask systemd-journald.service
-#systemctl mask systemd-journald.socket
-#systemctl mask systemd-journald-dev-log.socket
+systemctl stop systemd-journald-dev-log.socket
+systemctl stop systemd-journald.socket
+systemctl stop systemd-journald
+systemctl mask systemd-journald.service
+systemctl mask systemd-journald.socket
+systemctl mask systemd-journald-dev-log.socket
 
 cat >> /etc/sysctl.conf << EOF
+kernel.printk = 3 4 1 3
 vm.swappiness=10
 vm.dirty_ratio = 10
 net.ipv6.conf.all.disable_ipv6=1
@@ -174,9 +177,6 @@ Restart=always
 WantedBy=multi-user.target
 EOF
 
-
-### Step 3: Enable the WPA Supplicant Service
-systemctl enable wpa_supplicant@wlan0.service
 
 # 
 # Enable system services
