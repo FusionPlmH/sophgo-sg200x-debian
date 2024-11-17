@@ -146,7 +146,7 @@ EOF
 
 sysctl -p
 
-## Create Wifi
+# Create configuration for wlan0 (Static) 
 cat >> /etc/network/interfaces.d/wlan0 << EOF
 allow-hotplug wlan0
 iface wlan0 inet static
@@ -157,12 +157,21 @@ iface wlan0 inet static
         gateway 192.168.31.1
 EOF
 
-## Create Usb
+# Create configuration for usb0 (Static) 
 cat >> /etc/network/interfaces.d/usb0 << EOF
 allow-hotplug usb0
 iface usb0 inet static
         address 10.42.0.1
         netmask 255.255.255.0
+EOF
+
+# Create configuration for eth0 (DHCP) 
+cat > "/etc/systemd/network/10-eth0.network" <<-EOF
+[Match]
+Name=eth0 
+
+[Network]
+DHCP=yes
 EOF
 
 
@@ -193,10 +202,12 @@ mkenvimage -s 0x20000 -o /boot/uboot.env /etc/u-boot-initial-env
 # Add custom support
 rm -rf /etc/resolv.conf
 rm -rf /usr/lib/systemd/resolv.conf
+
 cat > "/etc/resolv.conf" <<-EOF
 nameserver 1.1.1.1
 mameserver 8.8.8.8
 EOF
+
 cat > "/usr/lib/systemd/resolv.conf" <<-EOF
 nameserver 1.1.1.1
 mameserver 8.8.8.8
