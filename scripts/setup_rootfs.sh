@@ -154,6 +154,7 @@ EOF
 
 sysctl -p
 
+## Create Wifi
 cat >> /etc/network/interfaces.d/wlan0 << EOF
 allow-hotplug wlan0
 iface wlan0 inet static
@@ -163,6 +164,28 @@ iface wlan0 inet static
         netmask 255.255.255.0
         gateway 192.168.31.1
 EOF
+
+## Create USB Net
+mkdir /sys/kernel/config/usb_gadget/g1
+cd /sys/kernel/config/usb_gadget/g1
+echo 0x1d6b > idVendor
+echo 0x0104 > idProduct
+mkdir strings/0x409
+echo "0123456789" > strings/0x409/serialnumber
+echo "My Manufacturer" > strings/0x409/manufacturer
+echo "My Gadget" > strings/0x409/product
+mkdir configs/c.1
+echo 120 > configs/c.1/MaxPower
+mkdir functions/ecm.usb0
+ln -s functions/ecm.usb0 configs/c.1/
+
+cat >> /etc/network/interfaces.d/usb0 << EOF
+allow-hotplug usb0
+iface usb0 inet static
+        address 10.42.0.1
+        netmask 255.255.255.0
+EOF
+
 
 
 # 
