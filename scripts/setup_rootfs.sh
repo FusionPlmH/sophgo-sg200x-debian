@@ -57,8 +57,6 @@ ExecStart=/bin/chmod 600 /swapfile
 ExecStart=/sbin/mkswap /swapfile
 ExecStart=/bin/echo '/swapfile none swap sw 0 0' |  /bin/tee -a /etc/fstab
 ExecStart=/sbin/swapon /swapfile
-ExecStart=/bin/systemctl enable wpa_supplicant@wlan0.service
-ExecStart=/bin/systemctl start wpa_supplicant@wlan0.service
 ExecStartPost=/bin/systemctl disable finalize-image
 
 [Install]
@@ -159,29 +157,11 @@ sysctl -p
 cat >> /etc/network/interfaces.d/wlan0 << EOF
 allow-hotplug wlan0
 iface wlan0 inet static
+        wpa-ssid Home_5G
+        wpa-psk 13password
         address 192.168.31.67
         netmask 255.255.255.0
         gateway 192.168.31.1
-EOF
-
-
-
-cat > /etc/systemd/system/wpa_supplicant@wlan0.service <<EOF
-[Unit]
-Description=WPA Supplicant for wlan0
-After=network.target
-Wants=network-online.target
-
-[Service]
-ExecStart=/sbin/wpa_supplicant -B -i wlan0 -c /etc/wpa_supplicant/wpa_supplicant.conf
-Restart=always
-RestartSec=60 
-
-# Check if the interface is up
-ExecStartPre=/bin/bash -c 'if ! ip link show wlan0 | grep -q "state UP"; then exit 1; fi'
-
-[Install]
-WantedBy=multi-user.target
 EOF
 
 
