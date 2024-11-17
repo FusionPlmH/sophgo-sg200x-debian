@@ -137,12 +137,10 @@ EOF
 # 
 # Disable Log for better performance save space
 #
-systemctl stop systemd-journald-dev-log.socket
-systemctl stop systemd-journald.socket
-systemctl stop systemd-journald
 systemctl mask systemd-journald.service
 systemctl mask systemd-journald.socket
 systemctl mask systemd-journald-dev-log.socket
+systemctl mask systemd-journal-flush.service
 
 cat >> /etc/sysctl.conf << EOF
 kernel.printk = 3 4 1 3
