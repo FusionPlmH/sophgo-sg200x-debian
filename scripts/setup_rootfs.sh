@@ -52,6 +52,10 @@ ExecStartPre=-/usr/sbin/parted -s -f /dev/mmcblk0 resizepart 2 100%
 ExecStartPre=-/usr/sbin/resize2fs /dev/mmcblk0p2
 ExecStartPre=-/bin/dd if=/dev/hwrng of=/dev/urandom count=1 bs=4096
 ExecStartPre=-/bin/sh -c "/bin/rm -f -v /etc/ssh/ssh_host_*_key*"
+ExecStartPre=fallocate -l 4G /swapfile
+ExecStartPre=chmod 600 /swapfile
+ExecStartPre=mkswap /swapfile
+ExecStartPre=echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
 ExecStartPre=/sbin/swapon /swapfile
 ExecStartPost=/bin/systemctl disable finalize-image
 
@@ -59,9 +63,9 @@ ExecStartPost=/bin/systemctl disable finalize-image
 WantedBy=multi-user.target
 EOF
 
-if [ "$STORAGETYPE" = "emmc" ]; then
-sed -i -e 's|ExecStartPre=-/usr/sbin/parted -s -f /dev/mmcblk0 resizepart 2 100%|ExecStartPre=-/usr/sbin/parted -s -f /dev/mmcblk0 resizepart 1 100%|' /etc/systemd/system/finalize-image.service
-fi
+#if [ "$STORAGETYPE" = "emmc" ]; then
+#sed -i -e 's|ExecStartPre=-/usr/sbin/parted -s -f /dev/mmcblk0 resizepart 2 100%|ExecStartPre=-/usr/sbin/parted -s -f /dev/mmcblk0 resizepart 1 100%|' /etc/systemd/system/finalize-image.service
+#fi
 
 cat /etc/systemd/system/finalize-image.service
 
@@ -119,15 +123,6 @@ cat >> /etc/hosts << EOF
 127.0.0.1      ${HOSTNAME} 
 EOF
 
-
-cat >> /etc/network/interfaces.d/usb0 << EOF
-auto usb0
-iface usb0 inet static
-        address 10.42.0.1
-        netmask 255.255.255.0
-EOF
-
-
 cat >> /etc/wpa_supplicant/wpa_supplicant.conf << EOF
 network={
     ssid="Home_5G"
@@ -139,12 +134,12 @@ EOF
 # 
 # Disable Log for better performance save space
 #
-systemctl stop systemd-journald-dev-log.socket
-systemctl stop systemd-journald.socket
-systemctl stop systemd-journald
-systemctl mask systemd-journald.service
-systemctl mask systemd-journald.socket
-systemctl mask systemd-journald-dev-log.socket
+#systemctl stop systemd-journald-dev-log.socket
+#systemctl stop systemd-journald.socket
+#systemctl stop systemd-journald
+#systemctl mask systemd-journald.service
+#systemctl mask systemd-journald.socket
+#systemctl mask systemd-journald-dev-log.socket
 
 cat >> /etc/sysctl.conf << EOF
 kernel.printk = 3 4 1 3
@@ -205,17 +200,6 @@ EOF
 
 echo "/boot/uboot.env	0x0000          0x20000" > /etc/fw_env.config
 mkenvimage -s 0x20000 -o /boot/uboot.env /etc/u-boot-initial-env
-
-# Create Swap
-dd if=/dev/zero of=/swapfile bs=1G count=2
-chmod 600 /swapfile
-mkswap /swapfile
-
-cat >> /etc/fstab << EOF
-/swapfile       none            swap    sw                        0       0
-EOF
-
-
 
 
 # Add custom support
