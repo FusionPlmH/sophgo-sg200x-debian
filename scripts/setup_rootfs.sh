@@ -203,8 +203,9 @@ mameserver 8.8.8.8
 EOF
 
 #
-# Clean apt cache on the system
+# set kernel header no updated and clean apt cache on the system
 #
+apt-mark hold linux-libc-dev
 apt-get clean
 
 
