@@ -40,7 +40,7 @@ fi
 
 
 
-#regenerate SSH keys on first boot
+#on first boot
 cat > /etc/systemd/system/finalize-image.service <<EOF
 [Unit]
 Description=Finalize the Image
@@ -69,7 +69,10 @@ EOF
 #sed -i -e 's|ExecStartPre=-/usr/sbin/parted -s -f /dev/mmcblk0 resizepart 2 100%|ExecStartPre=-/usr/sbin/parted -s -f /dev/mmcblk0 resizepart 1 100%|' /etc/systemd/system/finalize-image.service
 #fi
 
-cat /etc/systemd/system/finalize-image.service
+cat > /etc/sysctl.d/90-override.conf <<EOF
+kernel.pid_max = 32768
+EOF
+
 
 apt-get --no-install-recommends --no-install-suggests install -y -f /tmp/install/*.deb
 
@@ -190,11 +193,11 @@ fi
 
 rm -rf /etc/apt/sources.list.d/multistrap-debian.list
 
-cp /tmp/install/public-key.asc /etc/apt/trusted.gpg.d/sophgo-myho-st.gpg
+#cp /tmp/install/public-key.asc /etc/apt/trusted.gpg.d/sophgo-myho-st.gpg
 
 cat > /etc/apt/sources.list <<EOF
 deb http://deb.debian.org/debian sid main non-free-firmware
-deb https://sophgo.my-ho.st:8443/ debian sophgo
+#deb https://sophgo.my-ho.st:8443/ debian sophgo
 EOF
 
 echo "/boot/uboot.env	0x0000          0x20000" > /etc/fw_env.config
