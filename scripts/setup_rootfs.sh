@@ -56,7 +56,10 @@ ExecStart=/bin/chmod 600 /swapfile
 ExecStart=/sbin/mkswap /swapfile
 ExecStart=/bin/echo '/swapfile none swap sw 0 0' |  /bin/tee -a /etc/fstab
 ExecStart=/sbin/swapon /swapfile
+ExecStart=/bin/systemctl stop usb-gadget-rndis-usb0.service
 ExecStart=/bin/systemctl disable usb-gadget-rndis-usb0.service
+ExecStart=/bin/systemctl stop serial-getty@ttyS0.service
+ExecStart=/bin/systemctl disable serial-getty@ttyS0.service
 ExecStartPost=/bin/systemctl disable finalize-image
 
 [Install]
