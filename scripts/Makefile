@@ -24,8 +24,9 @@ endif
 include $(wildcard /builder/addons/*/addon.mk)
 
 
-addon-targets = $(BUILDDIR)/%-stamp
-_PACKAGES = $(patsubst %, %, $(PACKAGES))
+addon-targets = $(patsubst "%,$(BUILDDIR)/%-stamp,$(patsubst %",%,$(IMAGE_ADDITIONS)))
+_PACKAGES = $(patsubst "%,%,$(patsubst %",%,$(PACKAGES)))
+
 
 
 
