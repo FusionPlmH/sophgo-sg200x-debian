@@ -23,13 +23,14 @@ endif
 
 include $(wildcard /builder/addons/*/addon.mk)
 
-addon-targets = $(patsubst "%,$(BUILDDIR)/%-stamp,$(patsubst %",%,$(IMAGE_ADDITIONS)))
-_PACKAGES = $(patsubst "%,%,$(patsubst %",%,$(PACKAGES)))
+
+addon-targets = $(BUILDDIR)/%-stamp
+_PACKAGES = $(patsubst %, %, $(PACKAGES))
+
 
 
 $(info $(blue)Board: $(BOARD)$(reset))
 $(info $(blue)Storage: $(STORAGE_TYPE)$(reset))
-$(info $(blue)Image Addons: $(IMAGE_ADDITIONS)$(reset))
 $(info $(blue)Packages: $(_PACKAGES)$(reset))
 
 NPROCS := $(shell nproc)
