@@ -18,7 +18,6 @@ mount proc -t proc /proc
 mount -B sys /sys
 mount -B run /run
 mount -B dev /dev
-#mount devpts -t devpts /dev/pts
 dpkg --configure -a
 
 unset DEBIAN_FRONTEND DEBCONF_NONINTERACTIVE_SEEN
@@ -57,6 +56,7 @@ ExecStart=/bin/chmod 600 /swapfile
 ExecStart=/sbin/mkswap /swapfile
 ExecStart=/bin/echo '/swapfile none swap sw 0 0' |  /bin/tee -a /etc/fstab
 ExecStart=/sbin/swapon /swapfile
+ExecStart=/bin/systemctl disable usb-gadget-rndis-usb0.service
 ExecStartPost=/bin/systemctl disable finalize-image
 
 [Install]
@@ -173,8 +173,6 @@ Name=eth0
 DHCP=yes
 EOF
 
-# Disbale RNDIS DHCP
-systemctl disable usb-gadget-rndis-usb0.service
 
 # 
 # Enable system services
@@ -192,7 +190,6 @@ rm -rf /etc/apt/sources.list.d/multistrap-debian.list
 
 cat > /etc/apt/sources.list <<EOF
 deb http://deb.debian.org/debian sid main non-free-firmware
-#deb https://sophgo.my-ho.st:8443/ debian sophgo
 EOF
 
 echo "/boot/uboot.env	0x0000          0x20000" > /etc/fw_env.config
