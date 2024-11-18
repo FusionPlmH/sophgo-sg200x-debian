@@ -66,6 +66,34 @@ ExecStartPost=/bin/systemctl disable finalize-image
 WantedBy=multi-user.target
 EOF
 
+
+cat > /etc/systemd/system/sync-time-on-connect.service <<EOF
+[Unit]
+Description=Sync Time on First Internet Connect
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/bin/bash -c '
+    while true; do
+        if ping -c 1 -W 1 pool.ntp.org > /dev/null; then
+            timedatectl set-ntp true
+            sleep 5  # Allow time synchronization to complete
+            timedatectl set-ntp false
+            systemctl stop systemd-timesyncd
+            systemctl disable systemd-timesyncd
+            exit 0  # Exit loop after successful sync
+        fi
+        sleep 60  # Wait for 60 seconds before retrying
+    done
+'
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
 if [ "$STORAGETYPE" = "emmc" ]; then
 sed -i -e 's|ExecStartPre=-/usr/sbin/parted -s -f /dev/mmcblk0 resizepart 2 100%|ExecStartPre=-/usr/sbin/parted -s -f /dev/mmcblk0 resizepart 1 100%|' /etc/systemd/system/finalize-image.service
 fi
@@ -181,6 +209,7 @@ EOF
 # Enable system services
 #
 systemctl enable finalize-image.service
+systemctl enable sync-time-on-connect.service
 if [ -f /tmp/install/systemd-enable ]; then
   systemctl enable `cat /tmp/install/systemd-enable`
 fi
