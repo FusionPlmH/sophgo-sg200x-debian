@@ -192,7 +192,7 @@ EOF
 sysctl -p
 
 # Create configuration for wlan0 (Static) 
-cat >> /etc/network/interfaces.d/wlan0 << EOF
+cat >> /boot/network-inerfaces << EOF
 allow-hotplug wlan0
 iface wlan0 inet static
         wpa-ssid Home_5G
@@ -200,25 +200,37 @@ iface wlan0 inet static
         address 192.168.31.67
         netmask 255.255.255.0
         gateway 192.168.31.1
-EOF
 
-# Create configuration for usb0 (Static) 
-cat >> /etc/network/interfaces.d/usb0 << EOF
 allow-hotplug usb0
 iface usb0 inet static
         address 10.42.0.1
         netmask 255.255.255.0
+
+allow-hotplug eth0
+iface usb0 inet static
+        address 10.10.10.10
+        netmask 255.255.255.0
+        gateway 10.10.10.1
+
+        
+
+source /etc/network/interfaces.d/*
 EOF
 
-# Create configuration for eth0 (DHCP) 
-cat > "/etc/systemd/network/10-eth0.network" <<-EOF
-[Match]
-Name=eth0 
+cat >> /etc/systemd/system/network-interfaces.service << EOF
+[Unit]
+Description=Update network from first boot
+After=network-pre.target
+Before=networking.service
 
-[Network]
-DHCP=yes
+[Service]
+Type=oneshot
+ExecStart=/bin/bash -c '[ -f /boot/network-interfaces ] && mv /boot/network-inerfaces /etc/network/interfaces'
+RemainAfterExit=true
+
+[Install]
+WantedBy=multi-user.target
 EOF
-
 
 # 
 # Enable system services
@@ -226,6 +238,7 @@ EOF
 systemctl enable finalize-image.service
 systemctl enable sync-time-on-connect.service
 systemctl enable swap-create.service
+systemctl enable network-interfaces.service
 if [ -f /tmp/install/systemd-enable ]; then
   systemctl enable `cat /tmp/install/systemd-enable`
 fi
