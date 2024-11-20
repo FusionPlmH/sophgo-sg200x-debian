@@ -70,7 +70,7 @@ Before=ssh.service
 
 [Service]
 Type=oneshot
-ExecStart=/bin/fallocate -l 1G /swapfile
+ExecStart=/bin/fallocate -l 512M /swapfile
 ExecStart=/bin/chmod 600 /swapfile
 ExecStart=/sbin/mkswap /swapfile
 ExecStart=/bin/echo '/swapfile none swap sw 0 0' |  /bin/tee -a /etc/fstab
@@ -223,7 +223,8 @@ Before=networking.service
 
 [Service]
 Type=oneshot
-ExecStart=/bin/bash -c '[ -f /boot/custom-network-config ] && mv -f /etc/network/interfaces.d/custom-network-config'
+ExecStart=/bin/bash -c '[ -f /boot/custom-network-config ] && mv -f /boot/custom-network-config /etc/network/interfaces.d/custom-network-config'
+ExecStart=/bin/rm -rf /etc/network/interfaces.d/usb0
 RemainAfterExit=true
 
 [Install]
