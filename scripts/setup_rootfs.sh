@@ -201,6 +201,11 @@ iface wlan0 inet static
         netmask 255.255.255.0
         gateway 192.168.31.1
 
+allow-hotplug usb0
+iface usb0 inet static
+        address 10.42.0.1
+        netmask 255.255.255.0        
+
 allow-hotplug eth0
 iface usb0 inet static
         address 10.10.10.10
