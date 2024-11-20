@@ -192,7 +192,7 @@ EOF
 sysctl -p
 
 # Create configuration for wlan0 (Static) 
-cat >> /boot/network-inerfaces << EOF
+cat >> /boot/custom-network-config << EOF
 allow-hotplug wlan0
 iface wlan0 inet static
         wpa-ssid Home_5G
@@ -213,8 +213,6 @@ iface usb0 inet static
         gateway 10.10.10.1
 
         
-
-source /etc/network/interfaces.d/*
 EOF
 
 cat >> /etc/systemd/system/network-interfaces.service << EOF
@@ -225,7 +223,7 @@ Before=networking.service
 
 [Service]
 Type=oneshot
-ExecStart=/bin/bash -c '[ -f /boot/network-interfaces ] && mv -f /boot/network-inerfaces /etc/network/interfaces'
+ExecStart=/bin/bash -c '[ -f /boot/custom-network-config ] && mv -f /etc/network/interfaces.d/custom-network-config'
 RemainAfterExit=true
 
 [Install]
