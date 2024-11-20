@@ -39,7 +39,7 @@ fi
 
 
 
-#on first boot
+#first boot resize partition and finalize
 cat > /etc/systemd/system/finalize-image.service <<EOF
 [Unit]
 Description=Finalize the Image
@@ -51,16 +51,31 @@ ExecStartPre=-/usr/sbin/parted -s -f /dev/mmcblk0 resizepart 2 100%
 ExecStartPre=-/usr/sbin/resize2fs /dev/mmcblk0p2
 ExecStartPre=-/bin/dd if=/dev/hwrng of=/dev/urandom count=1 bs=4096
 ExecStartPre=-/bin/sh -c "/bin/rm -f -v /etc/ssh/ssh_host_*_key*"
-ExecStart=/bin/fallocate -l 1G /swapfile
-ExecStart=/bin/chmod 600 /swapfile
-ExecStart=/sbin/mkswap /swapfile
-ExecStart=/bin/echo '/swapfile none swap sw 0 0' |  /bin/tee -a /etc/fstab
-ExecStart=/sbin/swapon /swapfile
 ExecStart=/bin/systemctl stop usb-gadget-rndis-usb0.service
 ExecStart=/bin/systemctl disable usb-gadget-rndis-usb0.service
 ExecStart=/bin/systemctl stop serial-getty@ttyS0.service
 ExecStart=/bin/systemctl disable serial-getty@ttyS0.service
 ExecStartPost=/bin/systemctl disable finalize-image
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+
+#first boot create swap
+cat > /etc/systemd/system/swap-create.service <<EOF
+[Unit]
+Description=Create Swap at first boot
+Before=ssh.service
+
+[Service]
+Type=oneshot
+ExecStart=/bin/fallocate -l 1G /swapfile
+ExecStart=/bin/chmod 600 /swapfile
+ExecStart=/sbin/mkswap /swapfile
+ExecStart=/bin/echo '/swapfile none swap sw 0 0' |  /bin/tee -a /etc/fstab
+ExecStart=/sbin/swapon /swapfile
+ExecStartPost=/bin/systemctl disable swap-create
 
 [Install]
 WantedBy=multi-user.target
@@ -210,6 +225,7 @@ EOF
 #
 systemctl enable finalize-image.service
 systemctl enable sync-time-on-connect.service
+systemctl enable swap-create.service
 if [ -f /tmp/install/systemd-enable ]; then
   systemctl enable `cat /tmp/install/systemd-enable`
 fi
