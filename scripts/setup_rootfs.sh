@@ -225,7 +225,7 @@ Before=networking.service
 
 [Service]
 Type=oneshot
-ExecStart=/bin/bash -c '[ -f /boot/network-interfaces ] && mv /boot/network-inerfaces /etc/network/interfaces'
+ExecStart=/bin/bash -c '[ -f /boot/network-interfaces ] && mv -f /boot/network-inerfaces /etc/network/interfaces'
 RemainAfterExit=true
 
 [Install]
