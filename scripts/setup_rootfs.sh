@@ -201,11 +201,6 @@ iface wlan0 inet static
         netmask 255.255.255.0
         gateway 192.168.31.1
 
-allow-hotplug usb0
-iface usb0 inet static
-        address 10.42.0.1
-        netmask 255.255.255.0
-
 allow-hotplug eth0
 iface usb0 inet static
         address 10.10.10.10
@@ -219,12 +214,13 @@ cat >> /etc/systemd/system/network-interfaces.service << EOF
 [Unit]
 Description=Update network from first boot
 After=network-pre.target
+Before=ssh.service
 ConditionPathExists=/boot/custom-network-config
 
 [Service]
 Type=oneshot
 ExecStart=/bin/mv -f /boot/custom-network-config /etc/network/interfaces.d/custom-network-config
-ExecStart=/bin/rm -rf /etc/network/interfaces.d/usb0
+ExecStart=/bin/bash -c 'ifdown eth0 && ifup eth0 && ifdown wlan0 && ifup wlan0'
 RemainAfterExit=true
 
 [Install]
