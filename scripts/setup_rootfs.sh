@@ -219,11 +219,11 @@ cat >> /etc/systemd/system/network-interfaces.service << EOF
 [Unit]
 Description=Update network from first boot
 After=network-pre.target
-Before=networking.service
+ConditionPathExists=/boot/custom-network-config
 
 [Service]
 Type=oneshot
-ExecStart=/bin/bash -c '[ -f /boot/custom-network-config ] && mv -f /boot/custom-network-config /etc/network/interfaces.d/custom-network-config'
+ExecStart=/bin/mv -f /boot/custom-network-config /etc/network/interfaces.d/custom-network-config
 ExecStart=/bin/rm -rf /etc/network/interfaces.d/usb0
 RemainAfterExit=true
 
