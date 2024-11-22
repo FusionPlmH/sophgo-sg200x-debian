@@ -193,24 +193,24 @@ sysctl -p
 
 # Create configuration for wlan0 (Static) 
 cat >> /boot/custom-network-config << EOF
-allow-hotplug wlan0
-iface wlan0 inet static
-        wpa-ssid Home_5G
-        wpa-psk 13password
-        address 192.168.31.67
-        netmask 255.255.255.0
-        gateway 192.168.31.1
+# allow-hotplug wlan0
+# iface wlan0 inet static
+#         wpa-ssid Home_5G
+#         wpa-psk 13password
+#         address 192.168.31.67
+#         netmask 255.255.255.0
+#         gateway 192.168.31.1
 
 allow-hotplug usb0
 iface usb0 inet static
         address 10.42.0.1
         netmask 255.255.255.0        
 
-#allow-hotplug eth0
-#iface usb0 inet static
-#        address 10.10.10.10
-#        netmask 255.255.255.0
-#        gateway 10.10.10.1
+allow-hotplug eth0
+iface usb0 inet static
+        address 10.10.10.10
+        netmask 255.255.255.0
+        gateway 10.10.10.1
 
         
 EOF
@@ -225,8 +225,8 @@ ConditionPathExists=/boot/custom-network-config
 [Service]
 Type=oneshot
 ExecStart=/bin/mv -f /boot/custom-network-config /etc/network/interfaces.d/custom-network-config
-#ExecStart=/bin/bash -c 'ifdown eth0 && ifup eth0 && ifdown wlan0 && ifup wlan0'
-ExecStart=/bin/bash -c 'ifdown wlan0 && ifup wlan0'
+ExecStart=/bin/bash -c 'ifdown eth0 && ifup eth0'
+# ExecStart=/bin/bash -c 'ifdown eth0 && ifup eth0 && ifdown wlan0 && ifup wlan0'
 RemainAfterExit=true
 
 [Install]
