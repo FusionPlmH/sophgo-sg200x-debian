@@ -206,11 +206,11 @@ iface usb0 inet static
         address 10.42.0.1
         netmask 255.255.255.0        
 
-allow-hotplug end0
-iface end0 inet static
-        address 10.10.10.10
-        netmask 255.255.255.0
-        gateway 10.10.10.1
+#allow-hotplug end0
+#iface end0 inet static
+#        address 10.10.10.10
+#        netmask 255.255.255.0
+#        gateway 10.10.10.1
 
         
 EOF
@@ -225,7 +225,7 @@ ConditionPathExists=/boot/custom-network-config
 [Service]
 Type=oneshot
 ExecStart=/bin/mv -f /boot/custom-network-config /etc/network/interfaces.d/custom-network-config
-ExecStart=/bin/bash -c 'ifdown end0 && ifup end0'
+#ExecStart=/bin/bash -c 'ifdown end0 && ifup end0'
 ExecStart=/bin/bash -c 'ifdown wlan0 && ifup wlan0'
 RemainAfterExit=true
 
