@@ -105,4 +105,4 @@ jobs:
         with:
           append_body: true
           files: |
-            image-files-*/*
+            image-files-*/*.tar
