@@ -81,7 +81,7 @@ linux-clean:
 $(BUILDDIR)/uboot-prepare-checkout-stamp:
 	@echo "$(COLOUR_GREEN)Checking out U-Boot for $(BOARD)$(END_COLOUR)"
 	@mkdir -p $(BUILDDIR)
-	@git clone https://github.com/sophgo/u-boot-2021.10.git $(BUILDDIR)/u-boot
+	@git clone -b sg200x-dev https://github.com/sophgo/u-boot-2021.10.git $(BUILDDIR)/u-boot
 	@cd $(BUILDDIR)/u-boot
 	@touch $@
 
@@ -124,8 +124,8 @@ uboot-clean:
 $(BUILDDIR)/opensbi-prepare-checkout-stamp:
 	@echo "$(COLOUR_GREEN)Checking out OpenSBI for $(BOARD)$(END_COLOUR)"
 	@mkdir -p $(BUILDDIR)
-	@git clone -b sg200x-dev --depth 4 https://github.com/sophgo/opensbi.git $(BUILDDIR)/opensbi
-	@cd $(BUILDDIR)/opensbi && git checkout 6766e9c
+	@git clone -b sg200x-dev https://github.com/sophgo/opensbi.git $(BUILDDIR)/opensbi
+	@cd $(BUILDDIR)/opensbi
 	@touch $@
 
 
